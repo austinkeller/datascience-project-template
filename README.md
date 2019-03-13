@@ -14,9 +14,11 @@ You can choose the server platform during initiation of the `cookiecutter` scrip
 ## Get started
 From a terminal, change to the directory you want to hold the project folder, and run cookiecutter:
 
-	`$ cookiecutter https://github.com/austinkeller/datascience-project-template`
-	
+```
+$ cookiecutter https://github.com/austinkeller/datascience-project-template
+```
+
 Fill in the prompts (your name and email, project name and description, and the flavor of notebook platform) and it will be created for you! Be sure to double-check the auto-generated project slug and fix it if necessary–this will be the name of the folder.
 
-Adapted from https://github.com/outlierbio/ob-project-template
-Inspired by https://medium.com/outlier-bio-blog/a-quick-guide-to-organizing-data-science-projects-updated-for-2016-4cbb1e6dac71
+> Adapted from https://github.com/outlierbio/ob-project-template
+> Inspired by OutlierBio's [guide](https://medium.com/outlier-bio-blog/a-quick-guide-to-organizing-data-science-projects-updated-for-2016-4cbb1e6dac71) to organizing data science projects
