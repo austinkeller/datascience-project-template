@@ -20,5 +20,5 @@ $ cookiecutter https://github.com/austinkeller/datascience-project-template
 
 Fill in the prompts (your name and email, project name and description, and the flavor of notebook platform) and it will be created for you! Be sure to double-check the auto-generated project slug and fix it if necessary–this will be the name of the folder.
 
-> Adapted from https://github.com/outlierbio/ob-project-template
+> Adapted from https://github.com/outlierbio/ob-project-template<br>
 > Inspired by OutlierBio's [guide](https://medium.com/outlier-bio-blog/a-quick-guide-to-organizing-data-science-projects-updated-for-2016-4cbb1e6dac71) to organizing data science projects
