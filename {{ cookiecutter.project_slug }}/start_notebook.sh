@@ -82,7 +82,7 @@ echo ""
 echo ""
 echo "#### Attempting to open browser"
 echo ""
-open "http://localhost:${HOST_PORT}${url_attributes}"
+xdg-open "http://localhost:${HOST_PORT}${url_attributes}"
 {% else %}
 echo "If the notebook did not open automatically, point your browser to http://localhost."
 [ ! -z "$EXTERNAL_IP" ] && echo "If this machine is a server on your local network, point your browser to http://$(try_find_external_ip):${HOST_PORT}${url_attributes}"
@@ -94,5 +94,5 @@ echo ""
 echo ""
 echo "#### Attempting to open browser"
 echo ""
-open http://localhost
+xdg-open http://localhost
 {% endif %}
