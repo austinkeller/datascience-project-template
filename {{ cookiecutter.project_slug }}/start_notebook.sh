@@ -61,7 +61,7 @@ echo '#!/bin/bash' > $kill_container_script
 echo "docker kill $image_id" >> $kill_container_script
 
 echo "Waiting for container to start..."
-sleep 5
+sleep 8
 url_attributes=$(docker container logs $image_id --tail 1 2>&1 | grep -o \?.*)
 token=$(echo $url_attributes | grep -o token=.* | cut -d"=" -f2)
 
