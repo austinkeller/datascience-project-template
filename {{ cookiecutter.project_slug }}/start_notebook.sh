@@ -1,3 +1,7 @@
+#!/usr/bin/env sh
+
+set -e
+
 ### Helper functions
 
 try_find_open_port()
