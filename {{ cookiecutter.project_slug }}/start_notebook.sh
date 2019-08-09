@@ -2,27 +2,24 @@
 
 try_find_open_port()
 {
-	local  __out__host_port=$1
+	local __out__host_port=$1
 	local DEFAULT_HOST_PORT=80
+	local LOWERPORT
+	local UPPERPORT
 	read LOWERPORT UPPERPORT < /proc/sys/net/ipv4/ip_local_port_range
 	local MINPORT=49152
 	local MAXPORT=65535
 	LOWERPORT=$(( LOWERPORT > MINPORT ? LOWERPORT : MINPORT))
 	UPPERPORT=$(( UPPERPORT < MAXPORT ? UPPERPORT : MAXPORT))
 	echo "Searching port range ${LOWERPORT}-${UPPERPORT} for an available port..."
-	count=$(( MAXPORT - MINPORT ))
+	local count=$(( MAXPORT - MINPORT ))
 	while [ $count -gt 0 ]
 	do
-		HOST_PORT="`shuf -i $LOWERPORT-$UPPERPORT -n 1`"
+		PORT="`shuf -i $LOWERPORT-$UPPERPORT -n 1`"
 		ss -lpn | grep -q ":$PORT " || break
 		count=$(( count - 1 ))
 	done
-	__out__host_port=$(( count == 0 ? 80 : DEFAULT_HOST_PORT ))
-}
-
-try_find_external_ip()
-{
-	echo $(/sbin/ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}')
+	eval $__out__host_port=$(( count == 0 ? DEFAULT_HOST_PORT : PORT ))
 }
 
 ### Main
@@ -45,9 +42,6 @@ echo ""
 
 try_find_open_port HOST_PORT
 echo "Using port $HOST_PORT"
-
-EXTERNAL_IP=$(try_find_external_ip)
-[ ! -z "$EXTERNAL_IP" ] && echo "Found external ip address $EXTERNAL_IP"
 
 echo ""
 echo ""
@@ -85,7 +79,6 @@ echo ""
 xdg-open "http://localhost:${HOST_PORT}${url_attributes}"
 {% else %}
 echo "If the notebook did not open automatically, point your browser to http://localhost."
-[ ! -z "$EXTERNAL_IP" ] && echo "If this machine is a server on your local network, point your browser to http://$(try_find_external_ip):${HOST_PORT}${url_attributes}"
 echo "Login with:"
 echo "user: rstudio"
 echo "password: rstudio"
