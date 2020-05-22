@@ -1,5 +1,5 @@
 {% if cookiecutter.platform_slug == 'jupyter' %}
-FROM jupyter/datascience-notebook:58169ec3cfd3
+FROM jupyter/datascience-notebook:3b1f4f5e6cc1
 {% elif cookiecutter.platform_slug == 'rstudio' %}
 FROM rocker/rstudio
 {% elif cookiecutter.platform_slug == 'shiny' %}
