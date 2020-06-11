@@ -53,7 +53,8 @@ echo ""
 echo "#### Building Docker image"
 echo ""
 
-docker build -t $image .
+./build_notebook.sh
+
 docker run --name $name -d --rm -p $HOST_PORT:$port -v "$(pwd):$home_dir" $image
 
 echo "Waiting for container to start..."
