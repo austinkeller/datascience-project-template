@@ -40,6 +40,7 @@ WORKDIR /home/jovyan
 #  or for a local repository (for testing)
 #  -e git+file://./src/your_package#egg=your_package
 #  see https://pip.readthedocs.io/en/1.1/requirements.html#requirements-file-format
+ADD requirements.txt /src/
 RUN --mount=type=ssh \
       pip install -r /src/requirements.txt
 
