@@ -1,3 +1,7 @@
+#!/usr/bin/env sh
+
+set -e
+
 ### Helper functions
 
 try_find_open_port()
@@ -24,6 +28,7 @@ try_find_open_port()
 
 ### Main
 
+name={{ cookiecutter.project_slug }}
 image={{ cookiecutter.project_slug }}
 platform={{ cookiecutter.platform_slug }}
 
@@ -41,6 +46,7 @@ echo "#### Figuring out networking configuration"
 echo ""
 
 try_find_open_port HOST_PORT
+HOST_PORT=${JUPYTER_PORT:-$HOST_PORT}
 echo "Using port $HOST_PORT"
 
 echo ""
@@ -48,44 +54,30 @@ echo ""
 echo "#### Building Docker image"
 echo ""
 
-docker build -t $image .
-image_id=$(docker run -d --rm -p $HOST_PORT:$port -v "$(pwd):$home_dir" $image)
-kill_container_script=kill-container-${image_id}.sh
-echo '#!/bin/bash' > $kill_container_script
-echo "docker kill $image_id" >> $kill_container_script
+./build_notebook.sh
+
+docker run --name $name -d --rm -p $HOST_PORT:$port -v "$(pwd):$home_dir" $image
 
 echo "Waiting for container to start..."
 sleep 8
-url_attributes=$(docker container logs $image_id --tail 1 2>&1 | grep -o \?.*)
+url_attributes=$(docker container logs $name --tail 1 2>&1 | grep -o \?.*)
 token=$(echo $url_attributes | grep -o token=.* | cut -d"=" -f2)
 
 echo ""
 echo ""
 echo "#### Instructions for end-user"
 echo ""
-echo "Notebook server running in container $image_id"
-echo "Use 'bash kill-container-${image_id}.sh' to kill it."
+echo "Notebook server running in container $name"
+echo "Use 'bash kill_notebook.sh' to kill it."
 echo ""
 {% if cookiecutter.platform_slug == 'jupyter' %}
 echo "If the notebook did not open automatically, point your browser to http://localhost:${HOST_PORT}${url_attributes}"
 [ ! -z "$EXTERNAL_IP" ] && echo "If this machine is a server on your local network, point your browser to http://$(try_find_external_ip):${HOST_PORT}${url_attributes}"
 echo "Login with:"
 echo "token: $token"
-
-echo ""
-echo ""
-echo "#### Attempting to open browser"
-echo ""
-xdg-open "http://localhost:${HOST_PORT}${url_attributes}"
 {% else %}
 echo "If the notebook did not open automatically, point your browser to http://localhost."
 echo "Login with:"
 echo "user: rstudio"
 echo "password: rstudio"
-
-echo ""
-echo ""
-echo "#### Attempting to open browser"
-echo ""
-xdg-open http://localhost
 {% endif %}

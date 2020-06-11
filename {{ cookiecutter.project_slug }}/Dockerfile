@@ -1,5 +1,6 @@
+# syntax=docker/dockerfile:1.0.0-experimental
 {% if cookiecutter.platform_slug == 'jupyter' %}
-FROM jupyter/datascience-notebook:58169ec3cfd3
+FROM jupyter/datascience-notebook:3b1f4f5e6cc1
 {% elif cookiecutter.platform_slug == 'rstudio' %}
 FROM rocker/rstudio
 {% elif cookiecutter.platform_slug == 'shiny' %}
@@ -14,12 +15,22 @@ MAINTAINER {{ cookiecutter.full_name}} <{{ cookiecutter.email }}>
 USER root
 {% endif %}
 
-# Install system packages here, if necessary
-# RUN apt-get update -y && apt-get install -y your-desired-packages
+# Install additional system packages here, if necessary
+RUN apt-get update \
+      && apt-get install -y \
+      ssh \
+      curl \
+      build-essential \
+      swig \
+      && apt-get clean \
+      && rm -rf /var/lib/apt/lists/*
+
+# If packages need to be installed via ssh, add them here
+# Note: This bypasses host key checking. The fingerprint should be copied into
+#   the known_hosts file in this repo if going over external network to mitigiate MITM
+#RUN --mount=type=ssh ssh -o "StrictHostKeyChecking=no" -T git@github.com
 
 {% if cookiecutter.platform_slug == 'jupyter' %}
-USER $NB_USER
-
 # create and change working directory
 WORKDIR /home/jovyan
 
@@ -29,8 +40,13 @@ WORKDIR /home/jovyan
 #  or for a local repository (for testing)
 #  -e git+file://./src/your_package#egg=your_package
 #  see https://pip.readthedocs.io/en/1.1/requirements.html#requirements-file-format
-ADD requirements.txt /src/
-RUN pip install -r /src/requirements.txt
+RUN --mount=type=ssh \
+      pip install -r /src/requirements.txt
+
+RUN fix-permissions $CONDA_DIR && \
+          fix-permissions /home/$NB_USER
+
+USER $NB_USER
 {% endif %}
 
 # Custom R packages
