@@ -46,6 +46,7 @@ echo "#### Figuring out networking configuration"
 echo ""
 
 try_find_open_port HOST_PORT
+HOST_PORT=${JUPYTER_PORT:-$HOST_PORT}
 echo "Using port $HOST_PORT"
 
 echo ""
